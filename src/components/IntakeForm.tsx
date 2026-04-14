@@ -184,7 +184,7 @@ export function IntakeForm() {
         <div className="mb-6">
           <h2 className="font-display text-2xl text-navy">Agent Description</h2>
           <p className="mt-1 text-sm text-navy-400">
-            Raw notes — Claude will use this to craft polished marketing copy.
+            Raw notes — Groq will use this to craft polished marketing copy.
           </p>
         </div>
         <textarea
