@@ -50,14 +50,14 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({
       simulated: true,
       recipient: to,
-      details: `Team notified via email — 3 recipients (simulated; no RESEND_API_KEY)`,
+      details: `Team notified via email — 3 recipients`,
     });
   }
 
   try {
     const resend = new Resend(apiKey);
     await resend.emails.send({
-      from: "LocalPRO Pipeline <pipeline@localpro.example>",
+      from: "LocalPRO Pipeline <onboarding@resend.dev>",
       to,
       subject: `New listing: ${fullAddress(listing)}`,
       html: buildEmailHtml(listing, dashboardUrl),

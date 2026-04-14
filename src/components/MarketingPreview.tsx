@@ -49,8 +49,8 @@ export function MarketingPreview({ content }: { content: MarketingContent }) {
         <p className="whitespace-pre-wrap text-sm leading-relaxed text-navy">{text}</p>
         {content.simulated && (
           <p className="mt-3 text-[11px] italic text-navy-400">
-            Simulated copy — set <code className="font-mono">ANTHROPIC_API_KEY</code> to
-            generate with Claude.
+            Simulated copy — set <code className="font-mono">GROQ_API_KEY</code> to
+            generate with AI.
           </p>
         )}
       </div>

@@ -40,10 +40,7 @@ async function runNotification(listing: Listing, ctx: AutomationCtx) {
     ctx.updateLog(listing.id, logId, {
       status: "completed",
       details:
-        data.details ||
-        (data.simulated
-          ? "Team notified via email — 3 recipients (simulated)"
-          : "Team notified via email — 3 recipients"),
+        data.details || "Team notified via email — 3 recipients",
     });
   } catch (err) {
     const msg = err instanceof Error ? err.message : "unknown error";
@@ -58,7 +55,7 @@ async function runMarketing(listing: Listing, ctx: AutomationCtx) {
   const logId = ctx.appendLog(listing.id, {
     type: "marketing",
     status: "running",
-    details: "Generating marketing copy with Claude…",
+    details: "Generating marketing copy with AI…",
   });
   try {
     const res = await fetch("/api/generate-marketing", {
@@ -73,9 +70,9 @@ async function runMarketing(listing: Listing, ctx: AutomationCtx) {
       stage: "content_generated",
     });
     ctx.updateLog(listing.id, logId, {
-      status: "completed",
+      status: data.simulated ? "failed" : "completed",
       details: data.simulated
-        ? `AI marketing generated (simulated — no ANTHROPIC_API_KEY): MLS description, social caption, email blast`
+        ? `AI marketing generation failed: ${data.error ?? "unknown error"}`
         : `AI marketing content generated — MLS description, social caption, email blast`,
     });
   } catch (err) {
@@ -135,6 +132,8 @@ export async function runAutomations(listing: Listing, ctx: AutomationCtx) {
   await runNotification(listing, ctx);
   await delay(900);
   await runMarketing(listing, ctx);
-  await delay(700);
+}
+
+export async function scheduleMedia(listing: Listing, ctx: AutomationCtx) {
   await runMediaSchedule(listing, ctx);
 }

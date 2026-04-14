@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { ArrowRight, BedDouble, Bath, Ruler, X, PartyPopper, Trash2 } from "lucide-react";
+import { ArrowRight, BedDouble, Bath, Ruler, X, PartyPopper, Trash2, CalendarCheck } from "lucide-react";
 import type { Listing } from "@/lib/types";
 import { formatPrice, fullAddress } from "@/lib/format";
 import { PIPELINE_STAGES, STAGE_LABELS } from "@/lib/constants";
@@ -10,6 +10,7 @@ import { MarketingPreview } from "./MarketingPreview";
 import { ActivityLog } from "./ActivityLog";
 import { MediaScheduleView } from "./MediaScheduleView";
 import { useListings } from "@/context/ListingContext";
+import { scheduleMedia } from "@/lib/automations";
 
 interface Props {
   listing: Listing;
@@ -17,9 +18,13 @@ interface Props {
 }
 
 export function ListingDetail({ listing, onClose }: Props) {
-  const { advanceStage, deleteListing } = useListings();
+  const { advanceStage, deleteListing, appendLog, updateLog, updateListing } = useListings();
   const idx = PIPELINE_STAGES.indexOf(listing.stage);
   const nextStage = idx < PIPELINE_STAGES.length - 1 ? PIPELINE_STAGES[idx + 1] : null;
+
+  const handleScheduleMedia = () => {
+    void scheduleMedia(listing, { appendLog, updateLog, updateListing });
+  };
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -152,26 +157,29 @@ export function ListingDetail({ listing, onClose }: Props) {
           </section>
         </div>
 
-        {nextStage && (
+        {listing.stage === "content_generated" ? (
           <footer className="flex items-center justify-between gap-3 border-t border-navy-100 bg-navy-50/40 px-6 py-4">
             <p className="text-xs text-navy-400">
-              Advance manually once{" "}
-              {listing.stage === "media_scheduled"
-                ? "the team has reviewed"
-                : listing.stage === "review"
-                ? "final approval is in"
-                : "upstream work is complete"}
-              .
+              Review the marketing copy above, then schedule photography and video when ready.
             </p>
-            <button
-              onClick={() => advanceStage(listing.id)}
-              className="btn-primary"
-            >
+            <button onClick={handleScheduleMedia} className="btn-primary">
+              <CalendarCheck size={14} />
+              Schedule Media
+            </button>
+          </footer>
+        ) : nextStage ? (
+          <footer className="flex items-center justify-between gap-3 border-t border-navy-100 bg-navy-50/40 px-6 py-4">
+            <p className="text-xs text-navy-400">
+              {listing.stage === "media_scheduled"
+                ? "Media is booked — advance once the team has reviewed."
+                : "Final approval received — ready to go live."}
+            </p>
+            <button onClick={() => advanceStage(listing.id)} className="btn-primary">
               Advance to {STAGE_LABELS[nextStage]}
               <ArrowRight size={14} />
             </button>
           </footer>
-        )}
+        ) : null}
       </div>
     </div>
   );
