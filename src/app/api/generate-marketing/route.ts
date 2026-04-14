@@ -33,13 +33,54 @@ Listed at ${price}. Private showings are filling fast — reply to book a tour b
   };
 }
 
+function sanitizeControlChars(raw: string): string {
+  let out = "";
+  let inString = false;
+  let escape = false;
+  for (let i = 0; i < raw.length; i++) {
+    const c = raw[i];
+    if (escape) {
+      out += c;
+      escape = false;
+      continue;
+    }
+    if (c === "\\") {
+      out += c;
+      escape = true;
+      continue;
+    }
+    if (c === '"') {
+      inString = !inString;
+      out += c;
+      continue;
+    }
+    if (inString) {
+      if (c === "\n") { out += "\\n"; continue; }
+      if (c === "\r") { out += "\\r"; continue; }
+      if (c === "\t") { out += "\\t"; continue; }
+      const code = c.charCodeAt(0);
+      if (code < 0x20) {
+        out += "\\u" + code.toString(16).padStart(4, "0");
+        continue;
+      }
+    }
+    out += c;
+  }
+  return out;
+}
+
 function extractJson(text: string): unknown {
   const fenced = text.match(/```(?:json)?\s*([\s\S]*?)```/i);
   const candidate = fenced ? fenced[1] : text;
   const start = candidate.indexOf("{");
   const end = candidate.lastIndexOf("}");
   if (start === -1 || end === -1) throw new Error("no JSON object in response");
-  return JSON.parse(candidate.slice(start, end + 1));
+  const slice = candidate.slice(start, end + 1);
+  try {
+    return JSON.parse(slice);
+  } catch {
+    return JSON.parse(sanitizeControlChars(slice));
+  }
 }
 
 export async function POST(req: NextRequest) {
@@ -72,6 +113,7 @@ export async function POST(req: NextRequest) {
     const resp = await client.chat.completions.create({
       model: GROQ_MODEL,
       max_tokens: 1200,
+      response_format: { type: "json_object" },
       messages: [
         { role: "system", content: MARKETING_PROMPT },
         { role: "user", content: userBlock },

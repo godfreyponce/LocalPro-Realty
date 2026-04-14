@@ -1,32 +1,26 @@
 import type { Metadata } from "next";
-import { DM_Sans, Playfair_Display } from "next/font/google";
+import { Montserrat } from "next/font/google";
 import "./globals.css";
 import { ListingProvider } from "@/context/ListingContext";
 import { SiteHeader } from "@/components/SiteHeader";
 
-const dmSans = DM_Sans({
+const montserrat = Montserrat({
   subsets: ["latin"],
-  variable: "--font-dm-sans",
+  variable: "--font-montserrat",
   weight: ["400", "500", "600", "700"],
 });
 
-const playfair = Playfair_Display({
-  subsets: ["latin"],
-  variable: "--font-playfair",
-  weight: ["500", "600", "700"],
-});
-
 export const metadata: Metadata = {
-  title: "LocalPRO Pipeline",
+  title: "LocalPRO Realty — Listing Pipeline",
   description:
-    "Listing intake, automated marketing, and pipeline tracking for real-estate teams.",
+    "Listing intake, automated marketing, and pipeline tracking for LocalPRO Realty.",
 };
 
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${dmSans.variable} ${playfair.variable}`}>
+    <html lang="en" className={montserrat.variable}>
       <body className="min-h-screen bg-[var(--background)] text-navy antialiased">
         <ListingProvider>
           <SiteHeader />

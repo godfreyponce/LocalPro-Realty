@@ -8,20 +8,20 @@ export const runtime = "nodejs";
 
 function buildEmailHtml(listing: Listing, dashboardUrl: string): string {
   return `
-    <div style="font-family:DM Sans,Arial,sans-serif;max-width:560px;margin:auto;color:#0f172a;">
-      <h1 style="font-family:Playfair Display,serif;color:#0f172a;border-bottom:2px solid #d4a853;padding-bottom:8px;">
+    <div style="font-family:Montserrat,Arial,sans-serif;max-width:560px;margin:auto;color:#191919;">
+      <h1 style="font-family:Montserrat,Arial,sans-serif;font-weight:700;color:#000000;border-bottom:2px solid #dbae77;padding-bottom:8px;">
         New Listing: ${fullAddress(listing)}
       </h1>
-      <p style="font-size:20px;color:#d4a853;margin:16px 0;"><strong>${formatPrice(listing.price)}</strong></p>
+      <p style="font-size:20px;color:#dbae77;margin:16px 0;"><strong>${formatPrice(listing.price)}</strong></p>
       <table style="border-collapse:collapse;margin:12px 0;">
-        <tr><td style="padding:4px 12px 4px 0;color:#64748b;">Beds</td><td><strong>${listing.bedrooms}</strong></td></tr>
-        <tr><td style="padding:4px 12px 4px 0;color:#64748b;">Baths</td><td><strong>${listing.bathrooms}</strong></td></tr>
-        <tr><td style="padding:4px 12px 4px 0;color:#64748b;">Sqft</td><td><strong>${listing.sqft.toLocaleString()}</strong></td></tr>
+        <tr><td style="padding:4px 12px 4px 0;color:#5c5c5c;">Beds</td><td><strong>${listing.bedrooms}</strong></td></tr>
+        <tr><td style="padding:4px 12px 4px 0;color:#5c5c5c;">Baths</td><td><strong>${listing.bathrooms}</strong></td></tr>
+        <tr><td style="padding:4px 12px 4px 0;color:#5c5c5c;">Sqft</td><td><strong>${listing.sqft.toLocaleString()}</strong></td></tr>
       </table>
       <h3 style="margin-top:24px;">Agent notes</h3>
-      <p style="background:#f8fafc;padding:12px;border-radius:8px;white-space:pre-wrap;">${listing.description || "(none)"}</p>
+      <p style="background:#f5f5f5;padding:12px;border-radius:8px;white-space:pre-wrap;">${listing.description || "(none)"}</p>
       <p style="margin-top:24px;">
-        <a href="${dashboardUrl}" style="background:#0f172a;color:#d4a853;padding:10px 16px;border-radius:6px;text-decoration:none;">
+        <a href="${dashboardUrl}" style="background:#000000;color:#dbae77;padding:10px 16px;border-radius:6px;text-decoration:none;font-weight:600;">
           View in Pipeline →
         </a>
       </p>
@@ -57,9 +57,9 @@ export async function POST(req: NextRequest) {
   try {
     const resend = new Resend(apiKey);
     await resend.emails.send({
-      from: "LocalPRO Pipeline <onboarding@resend.dev>",
+      from: "LocalPRO Realty <onboarding@resend.dev>",
       to,
-      subject: `New listing: ${fullAddress(listing)}`,
+      subject: `[New Listing] ${fullAddress(listing)} — ${formatPrice(listing.price)}`,
       html: buildEmailHtml(listing, dashboardUrl),
     });
     return NextResponse.json({

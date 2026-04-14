@@ -15,9 +15,14 @@ export default function IntakePage() {
         <h1 className="font-display text-4xl font-semibold text-navy">
           New Listing Intake
         </h1>
-        <p className="mt-2 text-navy-400">
-          Capture the property details once. We&apos;ll notify the team, draft
-          the marketing copy, and schedule the media shoot automatically.
+        <p className="mt-3 rounded-md border-l-4 border-gold bg-gold/5 px-4 py-3 text-navy">
+          <strong>Submit once.</strong> We notify the team, draft your MLS,
+          social, and email copy with AI, and book the shoot — before you
+          leave the driveway.
+        </p>
+        <p className="mt-3 text-sm text-navy-400">
+          Capture the property details below. Every downstream automation
+          pulls from this form.
         </p>
       </header>
       <IntakeForm />

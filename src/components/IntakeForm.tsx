@@ -265,7 +265,7 @@ export function IntakeForm() {
 
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-end">
         <p className="text-xs text-navy-400">
-          Submitting will trigger 3 automations: team email, AI marketing, and media scheduling.
+          Submitting triggers the team email and AI marketing draft. Media scheduling fires once an agent reviews and approves the copy.
         </p>
         <button type="submit" disabled={submitting} className="btn-primary">
           {submitting ? (
