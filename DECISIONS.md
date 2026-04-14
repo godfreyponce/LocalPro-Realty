@@ -84,4 +84,4 @@ config surface for a demo.
   be able to see automations fire. The activity log labels simulated
   runs honestly. This is defensive design, and it's also the reason I
   can confidently deploy to Vercel without shipping you my API bill.
-- **Brand-matched UI.** Montserrat + LocalPRO Realty's navy (`#1b324e`) and gold (`#dbae77`) pulled straight from localprorealty.com. The detail is small. The signal, that I pay attention, is not.
+- **Brand-matched UI.** Montserrat, a black header with white text, `#252525` for secondary surfaces, and gold (`#dbae77`) for accents, all pulled straight from localprorealty.com. The detail is small. The signal, that I pay attention, is not.

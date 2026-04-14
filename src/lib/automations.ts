@@ -21,6 +21,20 @@ interface AutomationCtx {
 
 const delay = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
+function stripPhotos(listing: Listing): Listing {
+  return { ...listing, photos: [] };
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function parseJsonOrError(res: Response): Promise<any> {
+  const text = await res.text();
+  try {
+    return JSON.parse(text);
+  } catch {
+    throw new Error(`${res.status} ${res.statusText}: ${text.slice(0, 120)}`);
+  }
+}
+
 async function runNotification(listing: Listing, ctx: AutomationCtx) {
   const logId = ctx.appendLog(listing.id, {
     type: "notification",
@@ -32,11 +46,11 @@ async function runNotification(listing: Listing, ctx: AutomationCtx) {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({
-        listing,
+        listing: stripPhotos(listing),
         dashboardUrl: window.location.origin,
       }),
     });
-    const data = await res.json();
+    const data = await parseJsonOrError(res);
     ctx.updateLog(listing.id, logId, {
       status: "completed",
       details:
@@ -61,10 +75,9 @@ async function runMarketing(listing: Listing, ctx: AutomationCtx) {
     const res = await fetch("/api/generate-marketing", {
       method: "POST",
       headers: { "content-type": "application/json" },
-      body: JSON.stringify({ listing }),
+      body: JSON.stringify({ listing: stripPhotos(listing) }),
     });
-    if (!res.ok) throw new Error(`status ${res.status}`);
-    const data = (await res.json()) as MarketingContent & { error?: string };
+    const data = (await parseJsonOrError(res)) as MarketingContent & { error?: string };
     ctx.updateListing(listing.id, {
       marketingContent: data,
       stage: "content_generated",
