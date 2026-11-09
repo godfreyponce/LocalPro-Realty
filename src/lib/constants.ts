@@ -28,6 +28,14 @@ export const DRONE_PRICE_THRESHOLD = 500_000;
 
 export const DEFAULT_TEAM_EMAIL = "team@localpro.example";
 
+export const STATE_CODE_LENGTH = 2;
+export const ZIP_PLUS_4_LENGTH = "12345-6789".length;
+export const GUESSED_MAX_ADDRESS_LENGTH = 200;
+export const GUESSED_MAX_CITY_LENGTH = 100;
+export const GUESSED_MAX_DESCRIPTION_LENGTH = 2000;
+export const GUESSED_MAX_DASHBOARD_URL_LENGTH = 2048;
+export const GUESSED_MAX_REQUESTS_PER_MINUTE = 5;
+
 export const GROQ_MODEL = "llama-3.3-70b-versatile";
 
 export const MARKETING_PROMPT = `You are a luxury real estate marketing copywriter. Given the following property details, generate:

@@ -6,6 +6,13 @@ import { ImagePlus, Loader2, Trash2 } from "lucide-react";
 import { useListings } from "@/context/ListingContext";
 import { runAutomations } from "@/lib/automations";
 import type { NewListingInput } from "@/lib/types";
+import {
+  GUESSED_MAX_ADDRESS_LENGTH,
+  GUESSED_MAX_CITY_LENGTH,
+  GUESSED_MAX_DESCRIPTION_LENGTH,
+  STATE_CODE_LENGTH,
+  ZIP_PLUS_4_LENGTH,
+} from "@/lib/constants";
 
 const MAX_PHOTOS = 5;
 const MAX_BYTES = 4 * 1024 * 1024;
@@ -134,23 +141,26 @@ export function IntakeForm() {
           <div className="md:col-span-6">
             <label className="field-label" htmlFor="address">Street address</label>
             <input id="address" className="field-input" value={form.address}
+              maxLength={GUESSED_MAX_ADDRESS_LENGTH}
               onChange={(e) => set("address", e.target.value)}
               placeholder="123 Lakeview Drive" required />
           </div>
           <div className="md:col-span-3">
             <label className="field-label" htmlFor="city">City</label>
             <input id="city" className="field-input" value={form.city}
+              maxLength={GUESSED_MAX_CITY_LENGTH}
               onChange={(e) => set("city", e.target.value)} placeholder="Austin" required />
           </div>
           <div className="md:col-span-1">
             <label className="field-label" htmlFor="state">State</label>
-            <input id="state" className="field-input" value={form.state} maxLength={2}
+            <input id="state" className="field-input" value={form.state} maxLength={STATE_CODE_LENGTH}
               onChange={(e) => set("state", e.target.value.toUpperCase())}
               placeholder="TX" required />
           </div>
           <div className="md:col-span-2">
             <label className="field-label" htmlFor="zip">Zip</label>
             <input id="zip" className="field-input" value={form.zip}
+              maxLength={ZIP_PLUS_4_LENGTH}
               onChange={(e) => set("zip", e.target.value)} placeholder="78701" required />
           </div>
           <div className="md:col-span-2">
@@ -190,6 +200,7 @@ export function IntakeForm() {
         <textarea
           className="field-input min-h-[160px] resize-y leading-relaxed"
           value={form.description}
+          maxLength={GUESSED_MAX_DESCRIPTION_LENGTH}
           onChange={(e) => set("description", e.target.value)}
           placeholder="Just walked through — gorgeous light-filled living room with vaulted ceilings, remodeled kitchen with quartz counters, primary suite has a huge walk-in closet and spa bath. Backyard is small but beautifully landscaped. Walking distance to Central Market."
         />

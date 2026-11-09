@@ -51,6 +51,7 @@ async function runNotification(listing: Listing, ctx: AutomationCtx) {
       }),
     });
     const data = await parseJsonOrError(res);
+    if (!res.ok) throw new Error(data.error || `${res.status} ${res.statusText}`);
     ctx.updateLog(listing.id, logId, {
       status: "completed",
       details:
@@ -78,6 +79,7 @@ async function runMarketing(listing: Listing, ctx: AutomationCtx) {
       body: JSON.stringify({ listing: stripPhotos(listing) }),
     });
     const data = (await parseJsonOrError(res)) as MarketingContent & { error?: string };
+    if (!res.ok) throw new Error(data.error || `${res.status} ${res.statusText}`);
     ctx.updateListing(listing.id, {
       marketingContent: data,
       stage: "content_generated",

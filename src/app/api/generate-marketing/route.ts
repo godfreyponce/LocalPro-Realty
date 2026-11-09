@@ -1,13 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import Groq from "groq-sdk";
-import type { Listing, MarketingContent } from "@/lib/types";
+import type { MarketingContent } from "@/lib/types";
 import { GROQ_MODEL, MARKETING_PROMPT } from "@/lib/constants";
 import { formatPrice, fullAddress } from "@/lib/format";
+import { admitListingRequest, type ListingFields } from "@/lib/api-guard";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
 
-function stubContent(listing: Listing): MarketingContent {
+function stubContent(listing: ListingFields): MarketingContent {
   const addr = fullAddress(listing);
   const beds = listing.bedrooms;
   const baths = listing.bathrooms;
@@ -84,16 +85,9 @@ function extractJson(text: string): unknown {
 }
 
 export async function POST(req: NextRequest) {
-  let body: { listing?: Listing };
-  try {
-    body = await req.json();
-  } catch {
-    return NextResponse.json({ error: "invalid json" }, { status: 400 });
-  }
-  const listing = body.listing;
-  if (!listing) {
-    return NextResponse.json({ error: "missing listing" }, { status: 400 });
-  }
+  const admission = await admitListingRequest(req, "generate-marketing");
+  if ("refusal" in admission) return admission.refusal;
+  const { listing } = admission;
 
   const apiKey = process.env.GROQ_API_KEY;
   if (!apiKey) {
